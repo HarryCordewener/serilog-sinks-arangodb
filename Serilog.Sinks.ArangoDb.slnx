@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Serilog.Sinks.ArangoDb.Tests/Serilog.Sinks.ArangoDb.Tests.csproj" />
+  <Project Path="Serilog.Sinks.ArangoDb/Serilog.Sinks.ArangoDb.csproj" />
+</Solution>
