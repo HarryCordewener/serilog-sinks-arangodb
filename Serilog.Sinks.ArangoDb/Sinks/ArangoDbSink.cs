@@ -6,15 +6,25 @@ using Serilog.Formatting.Json;
 using System.Text;
 using System.Text.Json;
 
-namespace Serilog.Sinks.ArangoDb;
+namespace Serilog.Sinks.ArangoDb.Sinks;
 
+/// <summary>
+/// ArangoDb sink for Serilog
+/// </summary>
 public class ArangoDbSink : ILogEventSink
 {
+    private readonly string[] _requiredIndexes = [ "Level", "Timestamp", "MessageTemplate"];
     private readonly JsonFormatter _formatProvider = new (renderMessage: false);
     private readonly ArangoContext _arango;
     private readonly ArangoHandle _database;
     private readonly string _collection;
 
+    /// <summary>
+    /// Constructs ArangoDbSink
+    /// </summary>
+    /// <param name="dbContext">An Arango Db Context, with a live endpoint.</param>
+    /// <param name="handle">An Arango Db Handle, representing the database - can accept a string for the database name.</param>
+    /// <param name="collectionName">The name of the collection to use.</param>
     public ArangoDbSink(
         ArangoContext dbContext,
         ArangoHandle handle,
@@ -34,7 +44,9 @@ public class ArangoDbSink : ILogEventSink
     {
 
         if (!await dbContext.Database.ExistAsync(handle))
+        {
             await dbContext.Database.CreateAsync(handle);
+        }
 
         if (!await dbContext.Collection.ExistAsync(handle, _collection))
         {
@@ -48,36 +60,19 @@ public class ArangoDbSink : ILogEventSink
             });
         }
 
-        var indexes = await dbContext.Index.ListAsync(handle, _collection);
+        var existingIndexes = await dbContext.Index.ListAsync(handle, _collection);
 
-        if (!indexes.Any(x => x.Name == "Level"))
+        foreach( var index in _requiredIndexes)
         {
-            await dbContext.Index.CreateAsync(handle, _collection, new ArangoIndex
+            if (!existingIndexes.Any(x => x.Name == index))
             {
-                Type = ArangoIndexType.Persistent,
-                Name = "Level",
-                Fields = ["Level"]
-            });
-        }
-
-        if (!indexes.Any(x => x.Name == "Timestamp"))
-        {
-            await dbContext.Index.CreateAsync(handle, _collection, new ArangoIndex
-            {
-                Type = ArangoIndexType.Persistent,
-                Name = "Timestamp",
-                Fields = ["Timestamp"]
-            });
-        }
-
-        if (!indexes.Any(x => x.Name == "MessageTemplate"))
-        {
-            await dbContext.Index.CreateAsync(handle, _collection, new ArangoIndex
-            {
-                Type = ArangoIndexType.Persistent,
-                Name = "MessageTemplate",
-                Fields = ["MessageTemplate"]
-            });
+                await dbContext.Index.CreateAsync(handle, _collection, new ArangoIndex
+                {
+                    Type = ArangoIndexType.Persistent,
+                    Name = index,
+                    Fields = [index]
+                });
+            }
         }
     }
 
@@ -91,7 +86,7 @@ public class ArangoDbSink : ILogEventSink
                 _formatProvider.Format(logEvent, writer);
             }
 
-            var serialized = JsonSerializer.Deserialize<Dictionary<string, object>>(sb.ToString());
+            var serialized = JsonSerializer.Deserialize<Dictionary<string, object>>(sb.ToString().AsSpan());
 
             _arango.Document.CreateAsync(_database, _collection, serialized)
                 .AsTask()
@@ -103,14 +98,5 @@ public class ArangoDbSink : ILogEventSink
         {
             // Swallow all exceptions
         }
-    }
-    public class ArangoLogEvent
-    {
-        public required DateTimeOffset Timestamp { get; set; }
-        public required string Level { get; set; }
-        public required string Message { get; set; }
-        public required string MessageTemplate { get; set; }
-        public string? Exception { get; set; }
-        public required Dictionary<string, object?> Properties { get; set; }
     }
 }
