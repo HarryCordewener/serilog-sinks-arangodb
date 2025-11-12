@@ -1,4 +1,4 @@
-# This workflow will build a .NET project
+# This workflow will build a .NET project and release a NuGet version to NuGet.org
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
 name: .NET
@@ -24,6 +24,12 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore --configuration Release --verbosity normal
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Create the package
+      run: dotnet pack --configuration Release Serilog.Sinks.ArangoDb --no-build -o ./nupkg
+    - name: Publish the package to nuget.org
+      run: dotnet nuget push ./nupkg/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.NUGET_API_KEY }}

@@ -4,10 +4,38 @@
 	<TargetFrameworks>net10.0;net9.0;netstandard2.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Serilog.Sinks.ArangoDb</Title>
+    <Authors>Harry Cordewener</Authors>
+    <Description>A Serilog sink that writes events to a ArangoDB database.</Description>
+    <PackageProjectUrl>https://github.com/HarryCordewener/serilog-sinks-arangodb</PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/HarryCordewener/serilog-sinks-arangodb</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>serilog,serilog-sinks,arangodb</PackageTags>
+    <PackageReleaseNotes>Initial</PackageReleaseNotes>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<Version>1.0.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\Docs\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="Sinks\BatchedArangoDbSink.cs" />
   </ItemGroup>
 
