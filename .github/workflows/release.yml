@@ -4,10 +4,12 @@
 name: Release
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_call: 
+    inputs:
+      release_version:
+        description: 'The version to release'
+        required: true
+        type: string
 
 jobs:
   build:
@@ -28,7 +30,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Create the package
-      run: dotnet pack --configuration Release Serilog.Sinks.ArangoDb --no-build -o ./nupkg
+      run: dotnet pack --configuration Release Serilog.Sinks.ArangoDb/Serilog.Sinks.ArangoDb.csproj --no-build -o ./nupkg
     - name: Publish the package to nuget.org
       run: dotnet nuget push ./nupkg/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
       env:
