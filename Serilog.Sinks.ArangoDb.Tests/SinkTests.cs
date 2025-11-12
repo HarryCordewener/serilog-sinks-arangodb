@@ -1,4 +1,7 @@
-﻿namespace Serilog.Sinks.ArangoDb.Tests
+﻿using Serilog.Sinks.ArangoDb.Tests.DataSource;
+using System.Text.Json;
+
+namespace Serilog.Sinks.ArangoDb.Tests
 {
     public sealed class SinkTests
     {
@@ -40,14 +43,32 @@
         {
             ArangoDb.Logger
                 .ForContext<SinkTests>()
-                .Information("Logging with context {@ContextValue}", new { Gquuuuuux = "Bar"});
+                .Information("Logging with context {@ContextValue}", new { Gquuuuuux = "Bar" });
 
-            var result = await ArangoDb.ArangoContext.Query.ExecuteAsync<string>(ArangoDb.ArangoHandle, 
+            var result = await ArangoDb.ArangoContext.Query.ExecuteAsync<string>(ArangoDb.ArangoHandle,
                 $"FOR doc IN test_logs_collection RETURN doc.Properties.ContextValue.Gquuuuuux");
 
             var findResult = result.Where(log => log == "Bar");
 
             await Assert.That(findResult.Count()).IsGreaterThanOrEqualTo(1);
+        }
+
+        [Test]
+        [NotInParallel]
+        public async ValueTask LogsDontStoreValueKind()
+        {
+            ArangoDb.Logger
+                .ForContext<SinkTests>()
+                .Information("Logging with context {@ContextValue}", new { Foo = "Fizz" });
+
+            var result = await ArangoDb.ArangoContext.Query.ExecuteAsync<dynamic>(ArangoDb.ArangoHandle,
+                $"FOR doc IN test_logs_collection RETURN doc");
+
+            var transformedResult = result.Select(log => JsonSerializer.Serialize(log));
+
+            var findResult = transformedResult.Where(log => log.Contains("ValueKind"));
+
+            await Assert.That(findResult.Count()).IsEqualTo(0);
         }
     }
 }

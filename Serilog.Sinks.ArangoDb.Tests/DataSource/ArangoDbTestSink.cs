@@ -3,7 +3,7 @@ using Core.Arango.Serialization.Json;
 using Serilog.Sinks.ArangoDb.Sinks;
 using TUnit.Core.Interfaces;
 
-namespace Serilog.Sinks.ArangoDb.Tests;
+namespace Serilog.Sinks.ArangoDb.Tests.DataSource;
 
 public class ArangoDbTestSink : IAsyncInitializer, IAsyncDisposable
 {

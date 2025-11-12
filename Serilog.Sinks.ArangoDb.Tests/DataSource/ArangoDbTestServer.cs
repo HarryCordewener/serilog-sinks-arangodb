@@ -1,7 +1,7 @@
 ﻿using Testcontainers.ArangoDb;
 using TUnit.Core.Interfaces;
 
-namespace Serilog.Sinks.ArangoDb.Tests;
+namespace Serilog.Sinks.ArangoDb.Tests.DataSource;
 
 public class ArangoDbTestServer : IAsyncInitializer, IAsyncDisposable
 {
