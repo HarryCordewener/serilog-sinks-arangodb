@@ -100,4 +100,9 @@ public class BatchedArangoDbSink : IBatchedLogEventSink
             // Swallow all exceptions
         }
     }
+
+    public Task OnEmptyBatchAsync()
+    {
+        return Task.CompletedTask;
+    }
 }

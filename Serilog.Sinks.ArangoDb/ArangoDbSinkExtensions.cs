@@ -27,9 +27,10 @@ public static class ArangoDbSinkExtensions
         LoggingLevelSwitch? levelSwitch,
         LogEventLevel restrictedToMinimumLevel = LogEventLevel.Information)
         {
-            ArgumentNullException.ThrowIfNull(loggerConfiguration);
-            ArgumentNullException.ThrowIfNull(dbContext);
-            ArgumentNullException.ThrowIfNull(handle);
+            if (loggerConfiguration is null) throw new ArgumentNullException(nameof(loggerConfiguration));
+            if (dbContext is null) throw new ArgumentNullException(nameof(dbContext));
+            if (handle is null) throw new ArgumentNullException(nameof(handle));
+
             if (string.IsNullOrWhiteSpace(collectionName)) throw new ArgumentNullException(nameof(collectionName));
 
             var sink = new ArangoDbSink(
@@ -53,8 +54,8 @@ public static class ArangoDbSinkExtensions
         LoggingLevelSwitch? levelSwitch,
         LogEventLevel restrictedToMinimumLevel = LogEventLevel.Information)
         {
-            ArgumentNullException.ThrowIfNull(loggerConfiguration);
-            ArgumentNullException.ThrowIfNull(dbContext);
+            if (loggerConfiguration is null) throw new ArgumentNullException(nameof(loggerConfiguration));
+            if (dbContext is null) throw new ArgumentNullException(nameof(dbContext));
 
             var sink = new ArangoDbSink(
                 dbContext,
@@ -84,9 +85,10 @@ public static class ArangoDbSinkExtensions
         LoggingLevelSwitch? levelSwitch,
         LogEventLevel restrictedToMinimumLevel = LogEventLevel.Information)
         {
-            ArgumentNullException.ThrowIfNull(addSink);
-            ArgumentNullException.ThrowIfNull(dbContext);
-            ArgumentNullException.ThrowIfNull(handle);
+            if (addSink is null) throw new ArgumentNullException(nameof(addSink));
+            if (dbContext is null) throw new ArgumentNullException(nameof(dbContext));
+            if (handle is null) throw new ArgumentNullException(nameof(handle));
+
             if (string.IsNullOrWhiteSpace(collectionName)) throw new ArgumentNullException(nameof(collectionName));
 
             var sink = new ArangoDbSink(

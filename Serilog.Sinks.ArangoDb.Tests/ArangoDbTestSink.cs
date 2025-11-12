@@ -1,5 +1,6 @@
 ﻿using Core.Arango;
 using Core.Arango.Serialization.Json;
+using Serilog.Sinks.ArangoDb.Sinks;
 using TUnit.Core.Interfaces;
 
 namespace Serilog.Sinks.ArangoDb.Tests;
