@@ -15,7 +15,7 @@ public class BatchedArangoDbSink : IBatchedLogEventSink
 {
     private readonly string[] _requiredIndexes = ["Level", "Timestamp", "MessageTemplate"];
     private readonly JsonFormatter _formatProvider = new(renderMessage: false);
-    private readonly ArangoContext _arango;
+    private readonly IArangoContext _arango;
     private readonly ArangoHandle _database;
     private readonly string _collection;
 
@@ -26,7 +26,7 @@ public class BatchedArangoDbSink : IBatchedLogEventSink
     /// <param name="handle">An Arango Db Handle, representing the database - can accept a string for the database name.</param>
     /// <param name="collectionName">The name of the collection to use.</param>
     public BatchedArangoDbSink(
-        ArangoContext dbContext,
+        IArangoContext dbContext,
         ArangoHandle handle,
         string collectionName)
     {
@@ -40,7 +40,7 @@ public class BatchedArangoDbSink : IBatchedLogEventSink
             .GetResult();
     }
 
-    private async ValueTask EnsureIndexesAndDatabase(ArangoContext dbContext, ArangoHandle handle)
+    private async ValueTask EnsureIndexesAndDatabase(IArangoContext dbContext, ArangoHandle handle)
     {
 
         if (!await dbContext.Database.ExistAsync(handle))

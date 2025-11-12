@@ -10,11 +10,11 @@ public class ArangoDbTestSink : IAsyncInitializer, IAsyncDisposable
     [ClassDataSource<ArangoDbTestServer>(Shared = SharedType.PerTestSession)]
     public required ArangoDbTestServer ArangoDb { get; init; }
 
-    private ArangoContext? _arangoContext;
+    private IArangoContext? _arangoContext;
     private ArangoHandle? _handle;
     private ILogger? _logger;
 
-    public ArangoContext ArangoContext { get => _arangoContext!; }
+    public IArangoContext ArangoContext { get => _arangoContext!; }
     public ArangoHandle ArangoHandle { get => _handle!; }
     public ILogger Logger { get => _logger!; }
 

@@ -21,7 +21,7 @@ public static class ArangoDbSinkExtensions
         /// <returns>LoggerConfiguration with the ArangoDb Sink added</returns>
         /// <exception cref="ArgumentNullException">Missing arguments</exception>
         public LoggerConfiguration ArangoDb(
-        ArangoContext dbContext,
+        IArangoContext dbContext,
         ArangoHandle handle,
         string collectionName,
         LoggingLevelSwitch? levelSwitch,
@@ -40,30 +40,6 @@ public static class ArangoDbSinkExtensions
 
             return loggerConfiguration.Sink(sink, restrictedToMinimumLevel, levelSwitch);
         }
-
-        /// <summary>
-        /// Setup the ArangoDb Logging Sink, using the default 'logs' database and collection
-        /// </summary>
-        /// <param name="dbContext">ArangoDb Context</param>
-        /// <param name="levelSwitch">Logging Level Switch</param>
-        /// <param name="restrictedToMinimumLevel">Minimum Log Level</param>
-        /// <returns>LoggerConfiguration with the ArangoDb Sink added</returns>
-        /// <exception cref="ArgumentNullException">Missing arguments</exception>
-        public LoggerConfiguration ArangoDb(
-        ArangoContext dbContext,
-        LoggingLevelSwitch? levelSwitch,
-        LogEventLevel restrictedToMinimumLevel = LogEventLevel.Information)
-        {
-            if (loggerConfiguration is null) throw new ArgumentNullException(nameof(loggerConfiguration));
-            if (dbContext is null) throw new ArgumentNullException(nameof(dbContext));
-
-            var sink = new ArangoDbSink(
-                dbContext,
-                "logs",
-                "logs");
-
-            return loggerConfiguration.Sink(sink, restrictedToMinimumLevel, levelSwitch);
-        }
     }
 
     extension(Func<ILogEventSink, LogEventLevel, LoggingLevelSwitch?, LoggerConfiguration> addSink)
@@ -79,7 +55,7 @@ public static class ArangoDbSinkExtensions
         /// <returns>LoggerConfiguration with the ArangoDb Sink added</returns>
         /// <exception cref="ArgumentNullException">Missing arguments</exception>
         public LoggerConfiguration ConfigureArangoDb(
-        ArangoContext dbContext,
+        IArangoContext dbContext,
         ArangoHandle handle,
         string collectionName,
         LoggingLevelSwitch? levelSwitch,
